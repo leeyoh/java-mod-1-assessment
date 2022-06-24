@@ -1,9 +1,6 @@
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-import javax.swing.plaf.synth.SynthOptionPaneUI;
-
-
 enum State{
     START,
     EASY,
@@ -45,31 +42,69 @@ class GameEngine {
         },
         {
             {
-                "Guess a Number: ",
+                "[Easy] Guess a Number: ",
                 "Guess",
                 "(q|Q|[0-9]+|-[0-9]+)",
                 "Any Number within Range or Q"
             },
             {
                 "You Won!\n"+
-                "[Play Again? (Enter), Change Difficulty ( C ), Quit (Q)]:",
+                "[Play Again? (Enter), Restart ( R ), Quit (Q)]:",
                 "Won",
-                "(c|C|q|Q|$)",
-                "C  Q or Enter"
+                "(r|R|q|Q|$)",
+                "R  Q or Enter"
             },
             {
                 "You Lost!\n"+
-                "[Play Again? (Enter), Change Difficulty ( C ), Quit (Q)]:",
+                "[Play Again? (Enter), Restart ( R ), Quit (Q)]:",
                 "Lost",
-                "(c|C|q|Q|$)",
+                "(r|R|q|Q|$)",
                 "C  Q or Enter"
             },
         }, 
         {
-            {"Medium: "}
+            {
+                "[Medium] Guess a Number: ",
+                "Guess",
+                "(q|Q|[0-9]+|-[0-9]+)",
+                "Any Number within Range or Q"
+            },
+            {
+                "You Won!\n"+
+                "[Play Again? (Enter), Restart ( R ), Quit (Q)]:",
+                "Won",
+                "(r|R|q|Q|$)",
+                "R Q or Enter"
+            },
+            {
+                "You Lost!\n"+
+                "[Play Again? (Enter), Restart ( R ), Quit (Q)]:",
+                "Lost",
+                "(r|R|q|Q|$)",
+                "R Q or Enter"
+            },
         }, 
         {
-            {"Hard: "}
+            {
+                "[HARD] Guess a Number: ",
+                "Guess",
+                "(q|Q|[0-9]+|-[0-9]+)",
+                "Any Number within Range or Q"
+            },
+            {
+                "You Won!\n"+
+                "[Play Again? (Enter), Restart ( R ), Quit (Q)]:",
+                "Won",
+                "(r|R|q|Q|$)",
+                "R Q or Enter"
+            },
+            {
+                "You Lost!\n"+
+                "[Play Again? (Enter), Restart ( R ), Quit (Q)]:",
+                "Lost",
+                "(r|R|q|Q|$)",
+                "R Q or Enter"
+            },
         }
     };
 
@@ -114,6 +149,7 @@ class GameEngine {
     }
    
     private void stateMachine(String[][] tempMessageArr){
+        
         switch(this.currentState){
             case START:
                 switch(tempMessageArr[this.stateProgress][1]){
@@ -160,6 +196,7 @@ class GameEngine {
                         break;
                 }
                 break;
+
             case EASY:
                 switch(tempMessageArr[this.stateProgress][1]){
                     case "Guess":
@@ -168,7 +205,7 @@ class GameEngine {
                         if(this.guessUser > upperBound || this.guessUser < lowerBound){
                             System.out.println("Out of Range " + this.lowerBound + " - " + this.upperBound + " Try again \n");
                         } else {
-                            System.out.println("PC Guessed : " + this.pcNumber);
+                            System.out.println("System Guessed : " + this.pcNumber);
                             if(this.guessUser >= this.pcNumber){
                                 this.stateProgress = 1;
                             } else {
@@ -198,9 +235,83 @@ class GameEngine {
                         break;
                 }
                 break;
+
             case MEDIUM:
+                switch(tempMessageArr[this.stateProgress][1]){
+                    case "Guess":
+                        this.guessUser = Integer.parseInt(userinput);
+                        this.pcNumber = generateRandomNumber(lowerBound,upperBound);
+                        if(this.guessUser > upperBound || this.guessUser < lowerBound){
+                            System.out.println("Out of Range " + this.lowerBound + " - " + this.upperBound + " Try again \n");
+                        } else {
+                            System.out.println("System Guessed : " + this.pcNumber);
+                            if(this.guessUser > this.pcNumber){
+                                this.stateProgress = 1;
+                            } else {
+                                this.stateProgress = 2;
+                            }
+                        }
+                        break;
+                    case "Won":
+                        if(userinput.toLowerCase().equals("r")){
+                            this.currentState = State.START;
+                        }
+                        if(userinput.equals("")){
+                            //Something
+                        } 
+                        this.stateProgress = 0;
+                        clearConsole();
+                        break;
+                    case "Lost":
+                        if(userinput.toLowerCase().equals("r")){
+                            this.currentState = State.START;
+                        }
+                        if(userinput.equals("")){
+                            //Something
+                        } 
+                        this.stateProgress = 0;
+                        clearConsole();
+                        break;
+                }
                 break;
+
             case HARD:
+                switch(tempMessageArr[this.stateProgress][1]){
+                    case "Guess":
+                        this.guessUser = Integer.parseInt(userinput);
+                        this.pcNumber = generateRandomNumber(lowerBound,upperBound);
+                        if(this.guessUser > upperBound || this.guessUser < lowerBound){
+                            System.out.println("Out of Range " + this.lowerBound + " - " + this.upperBound + " Try again \n");
+                        } else {
+                            System.out.println("System Guessed : " + this.pcNumber);
+                            if(this.guessUser == this.pcNumber){
+                                this.stateProgress = 1;
+                            } else {
+                                this.stateProgress = 2;
+                            }
+                        }
+                        break;
+                    case "Won":
+                        if(userinput.toLowerCase().equals("r")){
+                            this.currentState = State.START;
+                        }
+                        if(userinput.equals("")){
+                            //Something
+                        } 
+                        this.stateProgress = 0;
+                        clearConsole();
+                        break;
+                    case "Lost":
+                        if(userinput.toLowerCase().equals("r")){
+                            this.currentState = State.START;
+                        }
+                        if(userinput.equals("")){
+                            //Something
+                        } 
+                        this.stateProgress = 0;
+                        clearConsole();
+                        break;
+                }
                 break;
             default:
                 break;
